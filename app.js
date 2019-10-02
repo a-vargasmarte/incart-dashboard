@@ -10,11 +10,6 @@ let svg = d3
   .attr("id", "mapCanvass")
   .attr("width", width)
   .attr("height", height)
-  .call(
-    d3.zoom().on("zoom", () => {
-      svg.attr("transform", d3.event.transform);
-    })
-  );
 
 d3.select("#mapCanvass")
   .append("text")
@@ -24,8 +19,8 @@ d3.select("#mapCanvass")
 let projection = d3
   .geoMercator()
   // .scale(width / 2 / Math.PI)
-  .scale(8000)
-  .translate([width * 14.8, height * 5]);
+  .scale(10000)
+  .translate([width * 18.5, height * 6.2]);
 
 let path = d3.geoPath().projection(projection);
 
@@ -62,18 +57,6 @@ let barTitle = d3
   .attr("font-size", "28");
 
 // ---------------------------------------------------------
-
-// -------------------- treemap ----------------------
-
-let treeSvg = d3
-  .select("body")
-  .append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform", `translate(${width / 6}, ${height / 6})`);
-
-// --------------------------------------------------------
 
 // ---------- mouse events ------------------
 let handleMouseOver = function(d) {
@@ -476,6 +459,7 @@ Promise.all([d3.json("./geodata.json"), d3.json("./drRegion.json")]).then(
     svg.selectAll(".NA").on("click", null);
 
     d3.select("#mapCanvass")
+      .attr("transform", `translate(20,-280)`)
       .append("rect")
       .attr("height", "50")
       .attr("width", "50")
