@@ -1,0 +1,143 @@
+[
+  {
+    "name": "Región 0",
+    "children": [
+      {
+        "name": "Distrito Nacional"
+      },
+      {
+        "name": "Santo Domingo"
+      },
+      {
+        "name": "Monte Plata"
+      }
+    ]
+  },
+  {
+    "name": "Región 1",
+    "children": [
+      {
+        "name": "Peravia"
+      },
+      {
+        "name": "San José de Ocoa"
+      },
+      {
+        "name": "San Cristóbal"
+      }
+    ]
+  },
+  {
+    "name": "Región 2",
+    "children": [
+      {
+        "name": "Espaillat"
+      },
+      {
+        "name": "Puerto Plata"
+      },
+      {
+        "name": "Santiago"
+      }
+    ]
+  },
+  {
+    "name": "Región 3",
+    "children": [
+      {
+        "name": "Duarte"
+      },
+      {
+        "name": "Hermanas Mirabal"
+      },
+      {
+        "name": "María Trinidad Sánchez"
+      },
+      {
+        "name": "Samaná"
+      }
+    ]
+  },
+  {
+    "name": "Región 4",
+    "children": [
+      {
+        "name": "Bahoruco"
+      },
+      {
+        "name": "Barahona"
+      },
+      {
+        "name": "Independencia"
+      },
+      {
+        "name": "Pedernales"
+      }
+    ]
+  },
+  {
+    "name": "Región 5",
+    "children": [
+      {
+        "name": "El Seybo"
+      },
+      {
+        "name": "Hato Mayor"
+      },
+      {
+        "name": "San Pedro de Macorís"
+      },
+      {
+        "name": "La Altagracia"
+      },
+      {
+        "name": "La Romana"
+      }
+    ]
+  },
+  {
+    "name": "Región 6",
+    "children": [
+      {
+        "name": "Azua"
+      },
+      {
+        "name": "La Estrelleta"
+      },
+      {
+        "name": "San Juan"
+      }
+    ]
+  },
+  {
+    "name": "Región 7",
+    "children": [
+      {
+        "name": "Dajabón"
+      },
+      {
+        "name": "Monte Cristi"
+      },
+      {
+        "name": "Santiago Rodríguez"
+      },
+      {
+        "name": "Valverde"
+      }
+    ]
+  },
+  {
+    "name": "Región 8",
+    "children": [
+      {
+        "name": "La Vega"
+      },
+      {
+        "name": "Sánchez Ramírez"
+      },
+      {
+        "name": "Monseñor Nouel"
+      }
+    ]
+  }
+]
