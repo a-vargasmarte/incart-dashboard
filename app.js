@@ -239,16 +239,6 @@ Promise.all([d3.json("./geodata.json"), d3.json("./drRegion.json")]).then(
       .select("#barCanvass")
       .append("g")
       .attr("class", "tooltip-group");
-    // Tooltip.append("rect")
-    //   .attr("height", 150)
-    //   .attr("width", 350)
-    //   .style("opacity", 0)
-    //   .attr("class", "tooltip")
-    //   .style("background-color", "white")
-    //   .style("border", "solid")
-    //   .style("border-width", "2px")
-    //   .style("border-radius", "5px")
-    //   .style("padding", "5px");
 
     Tooltip.append("text")
       .attr("font-size", "80")
@@ -320,63 +310,7 @@ Promise.all([d3.json("./geodata.json"), d3.json("./drRegion.json")]).then(
 
     function updateBarplot(data) {
       console.log(data);
-      // if (data.features.length > 1) {
-      //   // y Scale
-      //   let provinces = data.features.map(d => d.properties.NAME_1);
-      //   // console.log(provinces);
-      //   let yScale = d3
-      //     .scaleBand()
-      //     .domain(provinces)
-      //     .range([0, height])
-      //     .padding(0.1);
 
-      //   // y axis
-
-      //   let yAxis = d3.axisLeft(yScale);
-
-      //   barSvg.select(".yAxis").call(yAxis);
-
-      //   // x scale
-
-      //   let xScale = d3
-      //     .scaleLinear()
-      //     .domain([0, d3.max(data.features, d => +d.properties.total)])
-      //     .range([0, width]);
-
-      //   // x axis
-      //   let xAxis = d3.axisBottom(xScale);
-
-      //   barSvg.select(".xAxis").call(xAxis);
-
-      //   // --------------------- bar rendering -----------------
-
-      //   // EXIT
-      //   barSvg
-      //     .selectAll(".bar")
-      //     .exit()
-      //     .remove();
-
-      //   // JOIN
-
-      //   // append bars
-      //   barSvg
-      //     .selectAll(".bar")
-      //     .data(data.features)
-      //     .enter()
-      //     .append("rect")
-      //     .attr("class", d => `bar ${d.properties.NAME_1.split(" ").join("-")}`)
-      //     .attr("width", d => {
-      //       // console.log(d.properties.total, d.properties.NAME_1);
-      //       return xScale(+d.properties.total);
-      //     })
-      //     .attr("height", yScale.bandwidth())
-      //     .attr("y", d => yScale(d.properties.NAME_1))
-      //     .style("fill", d => color(d.properties.total))
-      //     .on("mouseover", handleMouseOver)
-      //     .on("mouseout", handleMouseOut);
-      // } else {
-      // console.log(data.features);
-      // y Scale
       let { properties } = data.features[0];
       let cancerStages = [
         { stage: "Stage I", value: properties.I },
@@ -474,11 +408,7 @@ Promise.all([d3.json("./geodata.json"), d3.json("./drRegion.json")]).then(
     // run function for the first time
     updateBarplot(data);
 
-    // ---------------------- treemap ------------------------
-    // console.log(data);
-
-    // console.log(regionData);
-
+    //-------------------------------------------------------
     regionData.map(region => {
       // console.log(region);
       region.children.map(child => {
@@ -491,18 +421,7 @@ Promise.all([d3.json("./geodata.json"), d3.json("./drRegion.json")]).then(
       });
     });
 
-    // console.log(regionData);
-
     let { features } = data;
-
-    let azua = features[22];
-
-    let cancerTotal = d3.sum(features, d => {
-      // console.log(d);
-      return d.properties.total;
-    });
-
-    // console.log(cancerTotal);
 
     // define hierarchical data structure
 
@@ -512,107 +431,10 @@ Promise.all([d3.json("./geodata.json"), d3.json("./drRegion.json")]).then(
       children: regionData
     };
 
-    // define tooltip
-    let tooltip = d3
-      .select("body")
-      .append("div")
-      .style("width", "50%")
-      .style("opacity", 0)
-      .attr("class", "tooltip")
-      .style("background-color", "white")
-      .style("border", "solid")
-      .style("border-width", "2px")
-      .style("border-radius", "5px")
-      .style("padding", "5px");
-
-    // define mouse events relevant to tooltip
-
-    let mouseover = function(d) {
-        console.log(d);
-        tooltip.style("opacity", 1);
-
-        // console.log(d3.select(this));
-
-        d3.select(this)
-          .style("stroke", "black")
-          .style("stroke-width", "2px");
-
-        let province = d3.selectAll(`.${d.data.name.split(" ").join("-")}`);
-
-        province.style("fill", "orange");
-      },
-      mousemove = function(d) {
-        // console.log(d);
-        tooltip
-          .html(`${d.data.name}: ${d.data.value}`)
-          .style("x", `${d3.mouse(this)[0] + 70}`)
-          .style("bottom", `${d3.mouse(this)[1]}px`);
-      },
-      mouseleave = function(d) {
-        tooltip.style("opacity", 0);
-        d3.select(this).style("stroke", "none");
-
-        let province = d3.selectAll(`.${d.data.name.split(" ").join("-")}`);
-        province.style("fill", color(d.data.value));
-      };
-
     let root = d3.hierarchy(hierarchy).sum(d => {
       // console.log(d.value);
       return d.value;
     });
-
-    // Then d3.treemap computes the position of each element of the hierarchy
-    d3
-      .treemap()
-      .size([width, height])
-      .padding(2)(root);
-
-    // use this information to add rectangles:
-    treeSvg
-      .selectAll("rect")
-      .data(root.leaves())
-      .enter()
-      .append("rect")
-      .attr("class", "leaf")
-      .attr("x", function(d) {
-        return d.x0;
-      })
-      .attr("y", function(d) {
-        return d.y0;
-      })
-      .attr("width", function(d) {
-        return d.x1 - d.x0;
-      })
-      .attr("height", function(d) {
-        return d.y1 - d.y0;
-      })
-      .style("padding", "5px")
-      .style("stroke", "black")
-      .style("fill", (d, i) => {
-        // console.log(d.parent);
-        return treemapColors(d.parent.data.name);
-      })
-      .on("mouseover", mouseover)
-      .on("mousemove", mousemove)
-      .on("mouseleave", mouseleave);
-
-    // and to add the text labels
-    treeSvg
-      .selectAll("text")
-      .data(root.leaves())
-      .enter()
-      .append("text")
-      .attr("x", function(d) {
-        return d.x0 + 5;
-      }) // +10 to adjust position (more right)
-      .attr("y", function(d) {
-        return d.y0 + 20;
-      }) // +20 to adjust position (lower)
-      .text(function(d) {
-        return `${d.data.value}`;
-      })
-      .attr("font-size", "15px")
-      .attr("fill", "white");
 
     // --------------------------------- fix opacity of map
 
