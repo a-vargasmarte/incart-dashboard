@@ -9,7 +9,7 @@ let svg = d3
   .append("svg")
   .attr("id", "mapCanvass")
   .attr("width", width)
-  .attr("height", height)
+  .attr("height", height);
 
 d3.select("#mapCanvass")
   .append("text")
@@ -449,7 +449,6 @@ Promise.all([d3.json("./geodata.json"), d3.json("./drRegion.json")]).then(
       .attr("transform", `translate(0,${margin.top})`);
 
     svg
-      // .on("click", svgClickHandler)
       .selectAll("path")
       .data(data.features)
       .on("mouseover", handleMouseOver)
@@ -458,14 +457,24 @@ Promise.all([d3.json("./geodata.json"), d3.json("./drRegion.json")]).then(
 
     svg.selectAll(".NA").on("click", null);
 
+    // ------------- reset handler for map
+
     d3.select("#mapCanvass")
       .attr("transform", `translate(20,-280)`)
+      .append("g")
+      .attr("transform", `translate(50,50)`)
+      .attr("class", "resetGroup")
+      .on("click", svgClickHandler)
       .append("rect")
       .attr("height", "50")
-      .attr("width", "50")
-      .on("click", svgClickHandler)
+      .attr("width", "100")
       .attr("transform", `translate(50,50)`)
+      .attr("opacity", 0.6);
+
+    d3.select(".resetGroup")
       .append("text")
-      .text("hello");
+      .attr("transform", `translate(70,75)`)
+      .style("fill", "white")
+      .text("reset map");
   }
 );
