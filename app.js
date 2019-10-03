@@ -71,6 +71,22 @@ d3.select("#mapCanvass")
   .attr("class", "stackXAxis stackAxis")
   .attr("transform", `translate(400, ${200})`);
 // .call(d3.axisBottom(x).tickSizeOuter(0));
+
+// -------------- percentage barplot------------------------
+let pctBar = d3
+  .select("#mapCanvass")
+  .append("g")
+  .attr("class", "pctGroup")
+  .attr("transform", `translate(${width / 1.8}, ${height - 100})`);
+
+pctBar.append("g").attr("class", "pctGroupYAxis pctAxis");
+// .attr("transform", `translate(${width / 1.8}, ${height - 100})`);
+
+pctBar
+  .append("g")
+  .attr("class", "pctGroupXAxis pctAxis")
+  .attr("transform", `translate(0, 75)`);
+
 // ---------- mouse events ------------------
 let handleMouseOver = function(d) {
   console.log(d);
@@ -218,15 +234,6 @@ Promise.all([d3.json("./geodata.json"), d3.json("./drRegion.json")]).then(
       let provincePercent =
         (d.properties.total / d3.sum(regionStats.children, d => d.value)) * 100;
 
-      let formattedPercent = d3.format(".2s")(provincePercent);
-
-      let provinceStatText = `En ${d.properties.NAME_1} se encontraron ${d.properties.total} de estos casos, correspondientes a ${formattedPercent}% de la ${d.properties.region}`;
-
-      d3.select(".provinceStat")
-        .transition()
-        .duration(1000)
-        .text(provinceStatText);
-
       // filter data by the name of the selected province
       let filteredData = {};
       filteredData["features"] = data.features.filter(
@@ -238,6 +245,66 @@ Promise.all([d3.json("./geodata.json"), d3.json("./drRegion.json")]).then(
       d3.selectAll(".stackAxis")
         .transition()
         .attr("opacity", 1);
+
+      // ------------------- percentage barplot ------------
+
+      console.log(regionStats);
+
+      let formattedPercent = d3.format(".2s")(provincePercent);
+
+      let provinceStatText = `${formattedPercent}%`;
+
+      let pctY = d3
+        .scaleBand()
+        .domain([regionStats.name])
+        .range([0, 75])
+        .padding(0.2);
+
+      d3.select(".pctGroupYAxis")
+        .transition()
+        .call(d3.axisLeft(pctY));
+
+      let pctX = d3
+        .scaleLinear()
+        .domain([0, 100])
+        .range([0, 200]);
+
+      d3.select(".pctGroupXAxis")
+        .transition()
+        .call(d3.axisBottom(pctX));
+
+      // append bar
+      console.log(d.properties);
+
+      let bar = pctBar.selectAll(".pctBar").data([d.properties]);
+
+      console.log(bar);
+
+      bar.exit().remove();
+
+      bar
+        .attr("y", d => pctY(d.region))
+        .attr("height", d => pctY.bandwidth())
+        .transition()
+        .attr("width", d => pctX((d.total / regionTotal) * 100));
+
+      bar
+        .enter()
+        .append("rect")
+        .attr("class", "pctBar")
+        .attr("y", d => pctY(d.region))
+        .attr("height", d => pctY.bandwidth())
+        .transition()
+        .attr("width", d => pctX((d.total / regionTotal) * 100));
+
+      d3.select(".provinceStat")
+        .attr(
+          "transform",
+          `translate(${width / 1.2}, ${height - margin.bottom})`
+        )
+        .transition()
+        .duration(1000)
+        .text(provinceStatText);
     };
 
     let svgClickHandler = function(d) {
