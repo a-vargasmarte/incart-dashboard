@@ -128,6 +128,70 @@ Promise.all([d3.json("./geodata.json"), d3.json("./drRegion.json")]).then(
         .attr("value", "clicked");
 
       console.log(regionData);
+      // ---------------- APPEND STACKED BARPLOT OF CANCER SEX DIFFERENCES ---
+      console.log(d.properties.m, d.properties.f);
+
+      let sexgroup = [
+        {
+          male: d.properties.m,
+          female: d.properties.f
+        }
+      ];
+      console.log(sexgroup);
+
+      let subgroups = ["male", "female"];
+      console.log(subgroups);
+
+      //  color palette = one color per subgroup
+      let color = d3
+        .scaleOrdinal()
+        .domain(subgroups)
+        .range(["#e41a1c", "#377eb8"]);
+
+      // add y axis
+      let y = d3
+        .scaleBand()
+        .domain([d.properties.NAME_1])
+        .range([0, 200])
+        .padding([0.2]);
+
+      // add x axis
+
+      let x = d3
+        .scaleLinear()
+        .domain([0, d.properties.m + d.properties.f])
+        .range([0, 200]);
+
+      d3.select("#mapCanvass")
+        .append("g")
+        .attr("transform", `translate(50, 0)`)
+        .call(d3.axisLeft(y));
+
+      d3.select("#mapCanvass")
+        .append("g")
+        .attr("transform", `translate(50, ${200})`)
+        .call(d3.axisBottom(x).tickSizeOuter(0));
+
+      let stackedData = d3.stack().keys(subgroups)(sexgroup);
+      console.log(stackedData);
+
+      // build the bars
+      d3.select("#mapCanvass")
+        .append("g")
+        .selectAll("g")
+        .data(stackedData)
+        .enter()
+        .append("g")
+        .attr("class", d => d.key)
+        .attr("fill", d => color(d.key))
+        .selectAll("rect")
+        .data(d => d)
+        .enter()
+        .append("rect")
+        // .attr("x", d => console.log(d))
+        .attr("x", d => x(d[0]))
+        .attr("width", d => x(d[1]) - x(d[0]))
+        .attr("height", d => y.bandwidth());
 
       let regionStats = regionData.filter(
         region => region.name === d.properties.region
