@@ -62,13 +62,13 @@ let barTitle = d3
 
 d3.select("#mapCanvass")
   .append("g")
-  .attr("class", "stackYAxis")
+  .attr("class", "stackYAxis stackAxis")
   .attr("transform", `translate(400, 125)`);
 // .call(d3.axisLeft(y));
 
 d3.select("#mapCanvass")
   .append("g")
-  .attr("class", "stackXAxis")
+  .attr("class", "stackXAxis stackAxis")
   .attr("transform", `translate(400, ${200})`);
 // .call(d3.axisBottom(x).tickSizeOuter(0));
 // ---------- mouse events ------------------
@@ -184,27 +184,30 @@ Promise.all([d3.json("./geodata.json"), d3.json("./drRegion.json")]).then(
         .transition()
         .call(d3.axisBottom(x).tickSizeOuter(0));
 
-      // let stackedData = d3.stack().keys(subgroups)(sexgroup);
-      // console.log(stackedData);
+      let stackedData = d3.stack().keys(subgroups)(sexgroup);
+      console.log(stackedData);
 
-      // // build the bars
-      // d3.select("#mapCanvass")
-      //   .append("g")
-      //   .selectAll("g")
-      //   .data(stackedData)
-      //   .enter()
-      //   .append("g")
-      //   .attr("transform", `translate(400,125)`)
-      //   .attr("class", d => d.key)
-      //   .attr("fill", d => color(d.key))
-      //   .selectAll("rect")
-      //   .data(d => d)
-      //   .enter()
-      //   .append("rect")
-      //   .attr("y", d => y(d.data.name))
-      //   .attr("x", d => x(d[0]))
-      //   .attr("width", d => x(d[1]) - x(d[0]))
-      //   .attr("height", d => y.bandwidth());
+      // build the bars
+      d3.select("#mapCanvass")
+        .append("g")
+        .attr("class", "stackGroup")
+        .selectAll("g")
+        .data(stackedData)
+        .enter()
+        .append("g")
+        .attr("transform", `translate(400,125)`)
+        .attr("class", d => d.key)
+        .attr("fill", d => color(d.key))
+        .selectAll("rect")
+        .data(d => d)
+        .enter()
+        .append("rect")
+        .attr("y", d => y(d.data.name))
+        .attr("x", d => x(d[0]))
+        .attr("height", d => y.bandwidth())
+        .transition()
+        .duration(500)
+        .attr("width", d => x(d[1]) - x(d[0]));
 
       let regionStats = regionData.filter(
         region => region.name === d.properties.region
@@ -230,6 +233,11 @@ Promise.all([d3.json("./geodata.json"), d3.json("./drRegion.json")]).then(
         province => province.properties.NAME_1 === d.properties.NAME_1
       );
       updateBarplot(filteredData);
+
+      // make the .stackAxis visible
+      d3.selectAll(".stackAxis")
+        .transition()
+        .attr("opacity", 1);
     };
 
     let svgClickHandler = function(d) {
@@ -259,6 +267,14 @@ Promise.all([d3.json("./geodata.json"), d3.json("./drRegion.json")]).then(
       d3.select(".provinceStat")
         .transition()
         .text("");
+
+      d3.selectAll("g.stackGroup")
+        .transition()
+        .remove();
+
+      d3.selectAll(".stackAxis")
+        .transition()
+        .attr("opacity", 0);
 
       updateBarplot(data);
     };
