@@ -58,6 +58,19 @@ let barTitle = d3
 
 // ---------------------------------------------------------
 
+// ----------------stacked barplot-------------------------
+
+d3.select("#mapCanvass")
+  .append("g")
+  .attr("class", "stackYAxis")
+  .attr("transform", `translate(400, 125)`);
+// .call(d3.axisLeft(y));
+
+d3.select("#mapCanvass")
+  .append("g")
+  .attr("class", "stackXAxis")
+  .attr("transform", `translate(400, ${200})`);
+// .call(d3.axisBottom(x).tickSizeOuter(0));
 // ---------- mouse events ------------------
 let handleMouseOver = function(d) {
   console.log(d);
@@ -134,7 +147,8 @@ Promise.all([d3.json("./geodata.json"), d3.json("./drRegion.json")]).then(
       let sexgroup = [
         {
           male: d.properties.m,
-          female: d.properties.f
+          female: d.properties.f,
+          name: d.properties.NAME_1
         }
       ];
       console.log(sexgroup);
@@ -152,7 +166,7 @@ Promise.all([d3.json("./geodata.json"), d3.json("./drRegion.json")]).then(
       let y = d3
         .scaleBand()
         .domain([d.properties.NAME_1])
-        .range([0, 200])
+        .range([0, 75])
         .padding([0.2]);
 
       // add x axis
@@ -162,36 +176,35 @@ Promise.all([d3.json("./geodata.json"), d3.json("./drRegion.json")]).then(
         .domain([0, d.properties.m + d.properties.f])
         .range([0, 200]);
 
-      d3.select("#mapCanvass")
-        .append("g")
-        .attr("transform", `translate(50, 0)`)
+      d3.select(".stackYAxis")
+        .transition()
         .call(d3.axisLeft(y));
 
-      d3.select("#mapCanvass")
-        .append("g")
-        .attr("transform", `translate(50, ${200})`)
+      d3.select(".stackXAxis")
+        .transition()
         .call(d3.axisBottom(x).tickSizeOuter(0));
 
-      let stackedData = d3.stack().keys(subgroups)(sexgroup);
-      console.log(stackedData);
+      // let stackedData = d3.stack().keys(subgroups)(sexgroup);
+      // console.log(stackedData);
 
-      // build the bars
-      d3.select("#mapCanvass")
-        .append("g")
-        .selectAll("g")
-        .data(stackedData)
-        .enter()
-        .append("g")
-        .attr("class", d => d.key)
-        .attr("fill", d => color(d.key))
-        .selectAll("rect")
-        .data(d => d)
-        .enter()
-        .append("rect")
-        // .attr("x", d => console.log(d))
-        .attr("x", d => x(d[0]))
-        .attr("width", d => x(d[1]) - x(d[0]))
-        .attr("height", d => y.bandwidth());
+      // // build the bars
+      // d3.select("#mapCanvass")
+      //   .append("g")
+      //   .selectAll("g")
+      //   .data(stackedData)
+      //   .enter()
+      //   .append("g")
+      //   .attr("transform", `translate(400,125)`)
+      //   .attr("class", d => d.key)
+      //   .attr("fill", d => color(d.key))
+      //   .selectAll("rect")
+      //   .data(d => d)
+      //   .enter()
+      //   .append("rect")
+      //   .attr("y", d => y(d.data.name))
+      //   .attr("x", d => x(d[0]))
+      //   .attr("width", d => x(d[1]) - x(d[0]))
+      //   .attr("height", d => y.bandwidth());
 
       let regionStats = regionData.filter(
         region => region.name === d.properties.region
