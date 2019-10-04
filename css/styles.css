@@ -1,0 +1,23 @@
+img#logo {
+    width: 30%;
+}
+
+#logo-container {
+    padding-bottom: 50px;
+}
+
+.navbar {
+    background-color: #F64A55;
+}
+
+#main-jumbotron {
+    background-color: #41479C
+}
+
+a{
+    color: white!important;
+}
+
+#main-jumbotron {
+    color:  white;
+}

@@ -5,7 +5,7 @@ let width = 680,
 //-----------------------map----------------------
 
 let svg = d3
-  .select("body")
+  .select("#mapDiv")
   .append("svg")
   .attr("id", "mapCanvass")
   .attr("width", width)
@@ -40,12 +40,12 @@ let opacityScale = d3.scaleLinear().range([0.5, 1]);
 // ------------- bar-chart -----------------------------
 
 let barSvg = d3
-  .select("body")
+  .select("#barDiv")
   .append("svg")
   .attr("id", "barCanvass")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height * 1.5)
-  .attr("transform", `translate(${width / 4}, 0)`)
+  .attr("transform", `translate(20, 0)`)
   .append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
@@ -631,7 +631,7 @@ Promise.all([d3.json("./geodata.json"), d3.json("./drRegion.json")]).then(
     // ------------- reset handler for map
 
     d3.select("#mapCanvass")
-      .attr("transform", `translate(20,-280)`)
+      .attr("transform", `translate(20,0)`)
       .append("g")
       .attr("transform", `translate(50,50)`)
       .attr("class", "resetGroup")
