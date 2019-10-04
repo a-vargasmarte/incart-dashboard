@@ -246,6 +246,11 @@ Promise.all([d3.json("./geodata.json"), d3.json("./drRegion.json")]).then(
         .transition()
         .attr("opacity", 1);
 
+      // make the .pctGroup element visible
+      d3.select("g.pctGroup")
+        .transition()
+        .attr("opacity", 1);
+
       // ------------------- percentage barplot ------------
 
       console.log(regionStats);
@@ -286,7 +291,8 @@ Promise.all([d3.json("./geodata.json"), d3.json("./drRegion.json")]).then(
         .attr("y", d => pctY(d.region))
         .attr("height", d => pctY.bandwidth())
         .transition()
-        .attr("width", d => pctX((d.total / regionTotal) * 100));
+        .attr("width", d => pctX((d.total / regionTotal) * 100))
+        .attr("fill", d => treemapColors(d.region));
 
       bar
         .enter()
@@ -295,7 +301,8 @@ Promise.all([d3.json("./geodata.json"), d3.json("./drRegion.json")]).then(
         .attr("y", d => pctY(d.region))
         .attr("height", d => pctY.bandwidth())
         .transition()
-        .attr("width", d => pctX((d.total / regionTotal) * 100));
+        .attr("width", d => pctX((d.total / regionTotal) * 100))
+        .attr("fill", d => treemapColors(d.region));
 
       d3.select(".provinceStat")
         .attr(
@@ -340,6 +347,10 @@ Promise.all([d3.json("./geodata.json"), d3.json("./drRegion.json")]).then(
         .remove();
 
       d3.selectAll(".stackAxis")
+        .transition()
+        .attr("opacity", 0);
+
+      d3.select("g.pctGroup")
         .transition()
         .attr("opacity", 0);
 
